@@ -23,7 +23,8 @@
     "@fontsource/aref-ruqaa": "latest",
     "@fontsource/cairo": "latest",
     "@fontsource/cinzel": "latest",
-    "cordova-plugin-purchase": "latest"
+    "cordova-plugin-purchase": "latest",
+    "@capacitor/filesystem": "latest"
   },
   "devDependencies": {
     "@capacitor/assets": "latest",
