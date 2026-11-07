@@ -815,7 +815,7 @@ const QUICK=[['هلا بالغالي','😊'],['هههههه','😂'],['مو م�
 const CHIPS=['كفو 👍','يلا العب! 😴','تكويش! 🃏','الحظ دوار 😂','نقطة ونقفل 💵','بسم الله نبدأ الجولة 🎴','لا تزعل.. باقي لك أمل 😎'];
 
 /* ---------------- persistent profile ---------------- */
-const DEF={coins:5000,name:'أنت',char:'nawaf',diff:'hard',target:500,sfx:true,voice:true,fast:false,minOpen:0,
+const DEF={coins:5000,name:'أنت',char:'nawaf',diff:'hard',target:500,sfx:true,voice:false,fast:false,minOpen:0,
  game:'moor',tarTarget:31,trixLen:'full',owned:{back:['crown'],felt:['green']},back:'crown',felt:'green',stats:{games:0,wins:0,rounds:0,tk:0},voices:{}};
 let P;
 try{P=Object.assign({},DEF,JSON.parse(localStorage.getItem('moor_p')||'{}'))}catch(e){P={...DEF}}
@@ -840,6 +840,7 @@ async function setReminder(on){
 }
 function shareApp(){if(CAP&&NP.Share)NP.Share.share({title:'مور',text:'جرّب لعبة مور 👑 بلوت وتركس وطرنيب ومور في مجلس واحد مع شخصيات تضحّك!',dialogTitle:'شارك مور'}).catch(()=>{})}
 function confirmModal(msg,yes,yesLbl){openModal(`<h2 class="goldtxt">${msg}</h2><button class="btn-gold close" id="cfYes">${yesLbl||'نعم'}</button><button class="ab close" onclick="closeModal(true)">لا</button>`,true);$('#cfYes').onclick=()=>{closeModal(true);yes()}}
+if(!P.voiceOffV1){P.voice=false;P.voiceOffV1=1;save()}
 function initNative(){setTimeout(ttsInit,800);
   if(!CAP)return;
   try{NP.StatusBar&&NP.StatusBar.hide().catch(()=>{})}catch(e){}
