@@ -1,0 +1,44 @@
+# يبني ملف AAB موقّع لقوقل بلاي تلقائياً على سيرفرات GitHub (ما تحتاج Android Studio)
+name: Android - بناء نسخة قوقل بلاي (AAB)
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21 }
+      - uses: android-actions/setup-android@v3
+      - name: تثبيت الحزم
+        run: npm install
+      - name: الخطوط داخل التطبيق
+        run: npm run fonts
+      - name: إنشاء مشروع أندرويد
+        run: npx cap add android
+      - name: الأيقونات وشاشة البداية
+        run: npx capacitor-assets generate --android --iconBackgroundColor '#2e0814' --splashBackgroundColor '#2e0814' --splashBackgroundColorDark '#2e0814'
+      - name: مزامنة
+        run: npx cap sync android
+      - name: رقم الإصدار
+        run: |
+          VN=$(node -p "require('./package.json').version")
+          sed -i -E "s/versionCode [0-9]+/versionCode ${{ github.run_number }}/; s/versionName \"[^\"]+\"/versionName \"$VN\"/" android/app/build.gradle
+          grep -E "versionCode|versionName" android/app/build.gradle
+      - name: مفتاح التوقيع
+        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/upload.keystore
+      - name: بناء AAB موقّع
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew bundleRelease \
+            -Pandroid.injected.signing.store.file=$PWD/upload.keystore \
+            -Pandroid.injected.signing.store.password='${{ secrets.ANDROID_KEYSTORE_PASSWORD }}' \
+            -Pandroid.injected.signing.key.alias=upload \
+            -Pandroid.injected.signing.key.password='${{ secrets.ANDROID_KEYSTORE_PASSWORD }}'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: moor-android-aab
+          path: android/app/build/outputs/bundle/release/*.aab

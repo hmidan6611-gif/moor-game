@@ -1,0 +1,23 @@
+# تشغّله مرة وحدة بس: يسوي مفتاح التوقيع (upload key) ويعطيك ملفاته تحمّلها وتحفظها
+name: Android - إنشاء مفتاح التوقيع (مرة وحدة)
+on:
+  workflow_dispatch:
+jobs:
+  key:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21 }
+      - name: إنشاء المفتاح
+        run: |
+          keytool -genkeypair -v -keystore upload.keystore -alias upload -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass '${{ secrets.ANDROID_KEYSTORE_PASSWORD }}' -keypass '${{ secrets.ANDROID_KEYSTORE_PASSWORD }}' \
+            -dname "CN=Moor, O=Moor, C=SA"
+          base64 -w0 upload.keystore > upload.keystore.base64.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: moor-upload-key-SAVE-SAFELY
+          path: |
+            upload.keystore
+            upload.keystore.base64.txt
+          retention-days: 1

@@ -1,0 +1,54 @@
+# بناء نسخة آيفون ورفعها لـ TestFlight / App Store على أجهزة ماك سحابية (ما تحتاج ماك)
+workflows:
+  ios-release:
+    name: iOS - App Store
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: moor_asc        # اسم مفتاح App Store Connect اللي تضيفه في Codemagic
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.moorgame.cards
+      node: 22
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: تثبيت الحزم والخطوط
+        script: |
+          npm install
+          npm run fonts
+      - name: إنشاء مشروع iOS
+        script: |
+          npx cap add ios
+          npx capacitor-assets generate --ios --splashBackgroundColor '#2e0814' --splashBackgroundColorDark '#2e0814'
+          npx cap sync ios
+      - name: إعدادات Info.plist
+        script: |
+          PL=ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" $PL || /usr/libexec/PlistBuddy -c "Set :ITSAppUsesNonExemptEncryption false" $PL
+          /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName مور" $PL || true
+          /usr/libexec/PlistBuddy -c "Set :CFBundleDevelopmentRegion ar" $PL || true
+          /usr/libexec/PlistBuddy -c "Add :UIStatusBarHidden bool true" $PL || true
+          /usr/libexec/PlistBuddy -c "Add :UIViewControllerBasedStatusBarAppearance bool false" $PL || /usr/libexec/PlistBuddy -c "Set :UIViewControllerBasedStatusBarAppearance false" $PL
+      - name: التوقيع
+        script: xcode-project use-profiles
+      - name: رقم البناء
+        script: |
+          cd ios/App
+          VN=$(node -p "require('../../package.json').version")
+          agvtool new-marketing-version $VN
+          agvtool new-version -all $BUILD_NUMBER
+      - name: بناء IPA
+        script: |
+          if [ -d ios/App/App.xcworkspace ]; then
+            xcode-project build-ipa --workspace ios/App/App.xcworkspace --scheme App
+          else
+            xcode-project build-ipa --project ios/App/App.xcodeproj --scheme App
+          fi
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true

@@ -1,0 +1,32 @@
+{
+  "name": "moor-cards",
+  "version": "1.0.0",
+  "private": true,
+  "description": "مور - ألعاب ورق المجلس: مور، بلوت، تركس، طرنيب",
+  "scripts": {
+    "fonts": "node scripts/copy-fonts.js",
+    "assets": "npx capacitor-assets generate --iconBackgroundColor '#2e0814' --iconBackgroundColorDark '#2e0814' --splashBackgroundColor '#2e0814' --splashBackgroundColorDark '#2e0814'",
+    "setup": "npm run fonts && npx cap add android && npx cap add ios && npm run assets && npx cap sync",
+    "sync": "npm run fonts && npx cap sync"
+  },
+  "dependencies": {
+    "@capacitor-community/text-to-speech": "latest",
+    "@capacitor/android": "latest",
+    "@capacitor/app": "latest",
+    "@capacitor/core": "latest",
+    "@capacitor/haptics": "latest",
+    "@capacitor/ios": "latest",
+    "@capacitor/local-notifications": "latest",
+    "@capacitor/share": "latest",
+    "@capacitor/splash-screen": "latest",
+    "@capacitor/status-bar": "latest",
+    "@fontsource/aref-ruqaa": "latest",
+    "@fontsource/cairo": "latest",
+    "@fontsource/cinzel": "latest",
+    "cordova-plugin-purchase": "latest"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "latest",
+    "@capacitor/cli": "latest"
+  }
+}
