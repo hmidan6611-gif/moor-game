@@ -5,6 +5,8 @@ on:
   workflow_dispatch:
   push:
     branches: [main, master]
+permissions:
+  contents: write
 jobs:
   apk:
     runs-on: ubuntu-24.04
@@ -36,3 +38,9 @@ jobs:
         with:
           name: moor-test-apk
           path: moor-test.apk
+      - name: رابط تحميل مباشر للجوال
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete test-apk -y --cleanup-tag || true
+          gh release create test-apk moor-test.apk --title "مور - نسخة تجربة (${{ github.run_number }})" --notes "افتح الرابط من الجوال ونزّل moor-test.apk وثبّته." --latest
