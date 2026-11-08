@@ -926,6 +926,23 @@ body:not(.mode-moor) #tw>.yourturn{bottom:calc(var(--tb) + 66px)}
 .fbtn:active{transform:translateY(3px);box-shadow:0 1px 0 #0f4a22}
 .finfo .fbar{width:100%}
 </style>
+<style id="v27">
+/* ===== v27: الشخصيات في منتصف جوانب الطاولة + لاعبك أسفل الطاولة ===== */
+body.mode-moor #game #seat1,body.mode-moor #game #seat3{top:50%!important;transform:translateY(-50%)}
+body.mode-moor #game #seat1{right:-6px!important}body.mode-moor #game #seat3{left:-6px!important}
+body.mode-moor #game #seat1 .bubble,body.mode-moor #game #seat3 .bubble{top:auto;bottom:100%}
+body.mode-moor #game #seat1 .bubble{right:6px}body.mode-moor #game #seat3 .bubble{left:6px}
+@media (max-width:899px){body.mode-moor .ground.split{left:calc(var(--ts) + 40px)!important;right:calc(var(--ts) + 40px)!important}
+  body.mode-moor #game .seat .av{width:54px!important;height:54px!important}}
+body.mode-moor #tw>#me{position:absolute!important;left:50%;bottom:calc(var(--tb) - 4px);transform:translateX(-50%);z-index:7;display:flex;flex-direction:column;align-items:center;gap:0;padding:0!important;background:none!important;border:0!important;box-shadow:none!important}
+body.mode-moor #tw>#me .av{width:56px!important;height:56px!important}
+body.mode-moor #tw>#me>div:last-child{margin-top:-6px;position:relative;z-index:2;background:linear-gradient(180deg,#0f3b27,#062014);border:1.5px solid #d9ac4f;border-radius:12px;padding:0 10px;line-height:1.3;text-align:center}
+body.mode-moor #tw>#me>div:last-child b{display:none!important}
+body.mode-moor #tw>#me small{font-size:11px}
+body.mode-moor #tw>#me .bubble{bottom:calc(100% + 6px);right:auto;left:50%;transform:translateX(-50%)}
+body.mode-moor #tw>.yourturn{bottom:calc(var(--tb) + 92px)}
+@media (min-width:900px){body.mode-moor #tw>#me .av{width:68px!important;height:68px!important}}
+</style>
 </head>
 <body>
 
@@ -1435,6 +1452,8 @@ const BGS=[{id:'majlis',n:'المجلس'},{id:'night',n:'ليل الصحراء',
 function pickBg(id){const b=BGS.find(x=>x.id===id);if(!b)return;if(b.vip&&!P.vip){toast('خلفية حصرية لمشتركي VIP 👑');return}P.bg=id;save();applyFelt();openSettings()}
 function applyBg(){const g=$('#gameBg');if(!g)return;const b=BGS.find(x=>x.id===(P.bg||'majlis'))||BGS[0];
   if(b.id==='majlis'){g.style.background='';g.style.backgroundImage=`url(${A.majlis})`;g.style.backgroundSize='cover';g.style.backgroundPosition='center';g.classList.remove('bgx')}else{g.style.cssText=b.css.replace(/^background:/,'background:');g.classList.add('bgx')}}
+function placeMe(){const me=$('#me'),tw=$('#tw');if(!me||!tw)return;if(!placeMe.home){placeMe.home=me.parentElement;placeMe.next=me.nextSibling}
+  const want=document.body.classList.contains('mode-moor');if(want&&me.parentElement!==tw)tw.appendChild(me);else if(!want&&me.parentElement===tw)placeMe.home.insertBefore(me,placeMe.next&&placeMe.next.parentElement===placeMe.home?placeMe.next:null)}
 function ensureAmb(){if($('#amb'))return;const bg=$('#gameBg');if(!bg)return;const a=document.createElement('div');a.id='amb';
   let h='<i class="amblight"></i><i class="ambpat"></i>';for(let k=0;k<8;k++)h+=`<b style="left:${(4+Math.random()*92).toFixed(1)}%;animation-delay:-${(Math.random()*16).toFixed(1)}s;animation-duration:${(13+Math.random()*9).toFixed(1)}s;width:${(3+Math.random()*5).toFixed(1)}px;height:${(3+Math.random()*5).toFixed(1)}px"></b>`;
   a.innerHTML=h;bg.after(a)}
@@ -1443,7 +1462,7 @@ function applyFelt(){
   const t=TBL[P.felt]||TBL.emerald,el=$('#tableEl');
   if(el){el.className='table th-'+t.theme+' lv'+lvOf('felt',t.id);el.removeAttribute('style');el.style.cssText=t.img?`--felt1:${t.f1};--felt2:${t.f2}`:tableStyle(t);
     el.innerHTML=t.flag?`<div class="flagmed l">${t.flag}</div><div class="flagmed r">${t.flag}</div>`:''}
-  {const g=$('#game');if(g){g.style.setProperty('--gl',t.gl||'#ffd36b');ensureAmb();applyBg()}}
+  {const g=$('#game');if(g){g.style.setProperty('--gl',t.gl||'#ffd36b');ensureAmb();applyBg();placeMe()}}
   const rim=$('#rimEl');if(rim){if(!$('#tGlow')){const tg=document.createElement('div');tg.id='tGlow';tg.className='tglow';rim.parentElement.insertBefore(tg,rim)}rim.classList.toggle('imgrim',!!t.img);if(t.img){const r=rim.getBoundingClientRect(),por=!r.width||r.height>=r.width*.95;rim.style.backgroundImage=`var(--ti${por?'P':'L'}-${t.id})`}else rim.style.backgroundImage=''}
 }
 let _cwC=null,_dcwC={};
