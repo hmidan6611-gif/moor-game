@@ -1294,7 +1294,7 @@ function meldErr(sel){
   return 'مو نزول صحيح: تسلسل من نفس الشكل (الآص قبل ٢ أو بعد K بس)، أو ثلاثات/آصات';
 }
 const meldPts=cards=>cards.reduce((a,c)=>a+mpts(c),0);
-function projOf(a){if(!a||a.len<7)return 0;if(a.type==='set')return a.wild?150:300;return a.wild?100:200}
+function projOf(a){if(!a||a.len<7||a.wild>1)return 0;if(a.type==='set')return a.wild?150:300;return a.wild?100:200}
 const projVal=m=>projOf(analyze(m.cards));
 const teamProjects=t=>S.melds.filter(m=>m.team===t).map(projVal).filter(v=>v>0);
 function closingOK(t){const v=teamProjects(t);return v.includes(300)||(v.includes(200)&&v.length>=2)}
@@ -2560,7 +2560,7 @@ function openRules(){
   <li><b>مجموعة:</b> ٣ أوراق أو أكثر من <b>الثلاثات أو الآصات بس</b>، ويجوز تكرار نفس الشكل (3♥ 3♥ 3♠).</li>
   <li><b>الجوكر والـ٢ ★</b> يعوّضون الورقة الناقصة. يجوز أكثر من جوكر و٢ في نفس النزول (بشرط ورقتين طبيعيتين على الأقل). والـ٢ ما ينتقل لنزول ثاني، بس يتحرك داخل نفس التسلسل.</li></ul>
   <h4>المشاريع (٧ أوراق أو أكثر)</h4><ul><li><b>٣٠٠:</b> سبع ثلاثات أو سبع آصات (وإذا فيها جوكر أو ٢ تصير <b>١٥٠</b>).</li>
-  <li><b>٢٠٠:</b> تسلسل ٧ أوراق بدون جوكر ولا ٢.</li><li><b>١٠٠:</b> تسلسل ٧ فيه جوكر أو ٢. وإذا رجع الـ٢ لمكانه الطبيعي بنفس الشكل يصير ٢٠٠.</li></ul>
+  <li><b>٢٠٠:</b> تسلسل ٧ أوراق بدون جوكر ولا ٢.</li><li><b>١٠٠:</b> تسلسل ٧ فيه جوكر أو ٢. وإذا رجع الـ٢ لمكانه الطبيعي بنفس الشكل يصير ٢٠٠.</li><li><b>استثناء:</b> إذا صار في المشروع أكثر من جوكر/٢ (مثلاً جوكرين، أو جوكر و٢) ما يحتسب مشروع، ينحسب ورق بس.</li></ul>
   <h4>المور والختم</h4><ul><li>اللي يخلّص أوراقه (١١) يسحب <b>المور</b> لفريقه ويكمّل. إذا خلّصها بالتمشية يسحبه على طول، وإذا خلّصها بالرمي يسحبه دوره الجاي. كل فريق ياخذ المور مرة وحدة.</li>
   <li><b>الختم:</b> ترمي آخر ورقة بعد ما فريقك سحب المور، بشرط مشاريع ٣٠٠: <b>مشروع ٣٠٠</b> أو <b>٢٠٠ + ١٠٠</b>. ما يصير بثلاث مشاريع ١٠٠ ولا بمشروعين ١٥٠.</li>
   <li>إذا خلصت أوراق السحب تنتهي الجولة بدون ختم.</li></ul>
@@ -3836,7 +3836,7 @@ moor:`<h2 class="goldtxt">Moor Rules</h2>
 <li><b>Set:</b> 3+ cards of <b>threes or aces only</b>; the same suit may repeat (3♥ 3♥ 3♠).</li>
 <li><b>Jokers and 2s ★</b> replace a missing card. A meld may contain several jokers and 2s (with at least two natural cards). A 2 can't move to another meld, only within its run.</li></ul>
 <h4>Projects (7 cards or more)</h4><ul><li><b>300:</b> seven threes or seven aces (<b>150</b> with a joker or 2).</li>
-<li><b>200:</b> a run of 7 with no joker or 2.</li><li><b>100:</b> a run of 7 with a joker or 2. If the 2 sits in its natural place and suit, it becomes 200.</li></ul>
+<li><b>200:</b> a run of 7 with no joker or 2.</li><li><b>100:</b> a run of 7 with a joker or 2. If the 2 sits in its natural place and suit, it becomes 200.</li><li><b>Exception:</b> if a project has more than one wild (e.g. two jokers, or a joker and a 2) it doesn't count as a project — only its card points count.</li></ul>
 <h4>The Moor and closing</h4><ul><li>The first player to empty their 11 cards takes <b>the Moor</b> for their team and keeps playing — straight away if they finished by laying off, or on their next turn if they finished by discarding. Each team takes the Moor once.</li>
 <li><b>Closing:</b> discard your last card after your team took the Moor, with 300 in projects: <b>one 300 project</b> or <b>200 + 100</b>. Three 100s or two 150s don't count.</li>
 <li>If the stock runs out, the round ends with no close.</li></ul>
