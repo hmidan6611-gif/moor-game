@@ -860,6 +860,9 @@ body.paused *,body.paused *:before,body.paused *:after{animation-play-state:paus
 html.nofx #amb,html.nofx .tglow,html.nofx .winfx .rays{display:none!important}
 html.nofx .avw .frm,html.nofx .card.jk:after,html.nofx .card.back.shine:after{animation:none!important}
 @media (prefers-reduced-motion:reduce){#amb b,.tglow,#amb .amblight,.avw .frm,.card.jk:after{animation:none!important}}
+/* «دورك الآن» داخل الطاولة فوق الحافة السفلية بدل ما يغطي الورق */
+#tw>.yourturn{bottom:calc(var(--tb) + 30px);font-size:15px;padding:4px 20px;z-index:40}
+body:not(.mode-moor) #tw>.yourturn{bottom:calc(var(--tb) + 66px)}
 /* ===== واجهة: انتقالات وأزرار ===== */
 .screen:not(.hidden){animation:scrIn .35s ease-out}
 @keyframes scrIn{from{opacity:0;transform:scale(1.015)}}
@@ -1393,7 +1396,7 @@ function seatHTML(i){
 function renderSeats(){
   for(const i of [1,2,3]){const el=$('#seat'+i);if(!el.querySelector('.si'))el.innerHTML='<div class="bubble"></div><div class="thk">💭</div><div class="si" style="display:flex;flex-direction:column;align-items:center;gap:2px"></div>';
     setH(el.querySelector('.si'),seatHTML(i));el.dataset.fr=frameOf(i);el.classList.toggle('turn',S.turn===i&&!S.over)}
-  $('#me').classList.toggle('turn',S.turn===0&&!S.over);{const yt=$('#yourTurn');if(yt){const on=S.turn===0&&!S.over;if(on&&!yt._was){yt.classList.remove('on');void yt.offsetWidth}yt._was=on;yt.classList.toggle('on',on);if(S.mode!=='moor')yt.textContent='دورك الآن'}}
+  $('#me').classList.toggle('turn',S.turn===0&&!S.over);{const yt=$('#yourTurn');if(yt){const bp=$('#bidPanel'),on=S.turn===0&&!S.over&&!(bp&&!bp.classList.contains('hidden'));if(on&&!yt._was){yt.classList.remove('on');void yt.offsetWidth}yt._was=on;yt.classList.toggle('on',on);if(S.mode!=='moor')yt.textContent='دورك الآن'}}
   {const ma=$('#me .av'),id=S.players[0].ch.id;if(ma.dataset.c!==id){ma.dataset.c=id;ma.innerHTML=faceHTML(id)}}
   const me=S.players[0];$('#meInfo').textContent=S.mode==='moor'?`${me.hand.length} ورقة${S.moorNext&&S.moorNext[0]?' • المور جاي 🎴':''}`:(T.g==='trix'?`${T.scores[0]} نقطة`:`أكل ${T.tricks[0]}`);
 }
@@ -3582,7 +3585,7 @@ trix:`<h2 class="goldtxt">Trix Rules</h2>
 (function(){const g=document.getElementById('game');if(!g)return;let was=g.classList.contains('hidden');
   new MutationObserver(()=>{const h=g.classList.contains('hidden');if(was&&!h){g.classList.remove('enter');void g.offsetWidth;g.classList.add('enter');setTimeout(()=>g.classList.remove('enter'),1800);try{applyFrames()}catch(e){}}was=h}).observe(g,{attributes:true,attributeFilter:['class']});
   let lt=0;document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.btn-gold,.ab,.tabs button,.ib,.gm');if(!b||b.disabled)return;const n=Date.now();if(n-lt<90)return;lt=n;try{sfx('tick')}catch(x){}},true);
-  try{applyFrames()}catch(e){}document.documentElement.classList.toggle('nofx',P.fx===false)})();
+  try{applyFrames()}catch(e){}{const yt=document.getElementById('yourTurn'),tw=document.getElementById('tw');if(yt&&tw)tw.appendChild(yt);const bp=document.getElementById('bidPanel');if(yt&&bp)new MutationObserver(()=>{if(!bp.classList.contains('hidden'))yt.classList.remove('on')}).observe(bp,{attributes:true,attributeFilter:['class']})}document.documentElement.classList.toggle('nofx',P.fx===false)})();
 </script>
 </body>
 </html>
