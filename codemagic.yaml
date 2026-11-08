@@ -21,6 +21,7 @@ workflows:
       - name: إنشاء مشروع iOS
         script: |
           npx cap add ios
+          node scripts/lock-portrait.js
           npx capacitor-assets generate --ios --splashBackgroundColor '#2e0814' --splashBackgroundColorDark '#2e0814'
           npx cap sync ios
       - name: إعدادات Info.plist

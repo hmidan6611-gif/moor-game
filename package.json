@@ -6,7 +6,8 @@
   "scripts": {
     "fonts": "node scripts/copy-fonts.js",
     "assets": "npx capacitor-assets generate --iconBackgroundColor '#2e0814' --iconBackgroundColorDark '#2e0814' --splashBackgroundColor '#2e0814' --splashBackgroundColorDark '#2e0814'",
-    "setup": "npm run fonts && npx cap add android && npx cap add ios && npm run assets && npx cap sync",
+    "setup": "npm run fonts && npx cap add android && npx cap add ios && npm run portrait && npm run assets && npx cap sync",
+    "portrait": "node scripts/lock-portrait.js",
     "sync": "npm run fonts && npx cap sync"
   },
   "dependencies": {

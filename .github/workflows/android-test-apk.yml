@@ -24,6 +24,8 @@ jobs:
         run: npm run fonts
       - name: إنشاء مشروع أندرويد
         run: npx cap add android
+      - name: تثبيت الشاشة على الوضع العمودي
+        run: node scripts/lock-portrait.js
       - name: الأيقونات وشاشة البداية
         run: npx capacitor-assets generate --android --iconBackgroundColor '#2e0814' --splashBackgroundColor '#2e0814' --splashBackgroundColorDark '#2e0814'
       - name: مزامنة
