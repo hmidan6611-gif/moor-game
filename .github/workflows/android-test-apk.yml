@@ -36,7 +36,7 @@ jobs:
           chmod +x gradlew
           sed -i 's/^networkTimeout=.*/networkTimeout=120000/' gradle/wrapper/gradle-wrapper.properties || true
           V=$(grep -o 'gradle-[0-9.]*-' gradle/wrapper/gradle-wrapper.properties | head -1 | sed 's/gradle-//;s/-$//')
-          if ! curl -fsI --max-time 20 "https://services.gradle.org/distributions/gradle-$V-bin.zip" >/dev/null; then
+          if ! curl -fsL -r 0-1023 --max-time 25 -o /dev/null "https://services.gradle.org/distributions/gradle-$V-bin.zip"; then
             echo "Gradle mirror for $V"; sed -i "s#^distributionUrl=.*#distributionUrl=https\\://mirrors.cloud.tencent.com/gradle/gradle-$V-bin.zip#" gradle/wrapper/gradle-wrapper.properties
           fi
           cat gradle/wrapper/gradle-wrapper.properties
