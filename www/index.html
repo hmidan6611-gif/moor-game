@@ -1000,6 +1000,22 @@ body.mode-moor #game .ground.split{bottom:calc(var(--tb) + 74px)!important}
 .cupb{display:flex;align-items:stretch;gap:4px;margin:10px 0;direction:rtl}.cupb>i{align-self:center;font-style:normal;opacity:.5}.cupb>div{flex:1;text-align:center;padding:8px 4px;border-radius:12px;background:rgba(0,0,0,.3);border:1px solid rgba(217,172,79,.25);display:flex;flex-direction:column;gap:3px;font-size:12px}.cupb b{font-size:13px}.cupb small{opacity:.75;font-size:10.5px}.cupb .cur{border-color:var(--gold2);box-shadow:0 0 12px rgba(255,210,110,.35)}.cupb .won{border-color:#3fbf6a}.cupb .lost{border-color:#c84848;opacity:.7}
 .stks{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.stks button{border:1px solid rgba(217,172,79,.3);border-radius:12px;background:rgba(0,0,0,.3);color:#fff3c4;font-size:10.5px;padding:5px 2px;display:flex;flex-direction:column;align-items:center}.stks i{font-style:normal;font-size:26px}
 </style>
+<style id="v33">
+.gm.real{padding:6px 5px 8px;overflow:hidden;position:relative;background:linear-gradient(180deg,#24190e,#140e07)}
+.gmfelt{position:relative;height:84px;border-radius:10px;margin-bottom:6px;overflow:hidden;box-shadow:inset 0 0 0 1.5px rgba(227,183,91,.45),inset 0 6px 14px rgba(0,0,0,.55),inset 0 -10px 18px rgba(0,0,0,.45);background-size:cover;background-position:center}
+.g-moor .gmfelt{background-image:var(--tiP-crimson),radial-gradient(circle at 50% 40%,#8a1c2c,#3a0810)}
+.g-baloot .gmfelt{background-image:var(--tiP-emerald),radial-gradient(circle at 50% 40%,#1d7a4a,#08301c)}
+.g-trix .gmfelt{background-image:var(--tiP-amethyst),radial-gradient(circle at 50% 40%,#5b2a8a,#1f0b33)}
+.g-tarneeb .gmfelt{background-image:var(--tiP-sapphire),radial-gradient(circle at 50% 40%,#1d4f8a,#081a33)}
+.gmfelt::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(255,240,200,.18),transparent 60%),linear-gradient(180deg,transparent 55%,rgba(0,0,0,.35))}
+.gmfan{position:absolute;left:50%;bottom:-2px;width:0;height:0;z-index:1;pointer-events:none}
+.gm .gmfan .card{--cw:31px;position:absolute;left:0;bottom:0;margin-left:calc(var(--cw)*-.5);transform-origin:50% 120%;transform:translateX(calc(var(--i)*10px)) rotate(var(--r));box-shadow:0 4px 9px rgba(0,0,0,.6),0 1px 2px rgba(0,0,0,.5);transition:transform .35s cubic-bezier(.2,1.2,.4,1)}
+.gmfan .card .cr{font-size:9px}.gmfelt{height:80px}
+.gm.real.sel .gmfan .card{transform:translateX(calc(var(--i)*12px)) translateY(-5px) rotate(calc(var(--r)*1.2))}
+.gm.real.sel .gmfelt{box-shadow:inset 0 0 0 2px var(--gold2),inset 0 6px 14px rgba(0,0,0,.5),0 0 14px rgba(246,220,147,.35)}
+.gm.real b{font-size:15px;margin-top:0}.gm.real small{line-height:1.25}
+.gm.real:active{transform:scale(.97)}
+</style>
 </head>
 <body>
 
@@ -2649,6 +2665,8 @@ function openRules(){
 }
 
 /* ================= MULTI-GAME: بلوت / تركس / طرنيب ================= */
+const GMFAN={moor:[{s:'C',r:2},{j:1},{s:'H',r:1}],baloot:[{s:'S',r:9},{s:'S',r:11},{s:'S',r:1}],trix:[{s:'S',r:12},{s:'H',r:13},{s:'H',r:12}],tarneeb:[{s:'D',r:10},{s:'D',r:1},{s:'D',r:13}]};
+function gmFan(k){const cs=GMFAN[k]||[],rot=[-16,0,16];return `<div class="gmfan">${cs.map((c,i)=>cardHTML(Object.assign({id:'gm'+k+i},c),'gmc').replace('class="card',`style="--i:${i-1};--r:${rot[i]}deg" class="card`)).join('')}</div>`}
 const GAMES=[['moor','مور','👑','الورق الخليجي'],['baloot','بلوت','♠️','صن وحكم ومشاريع'],['trix','تركس','♥️','ممالك وعقود'],['tarneeb','طرنيب','♦️','مزايدة وطرنيب']];
 const SNAME={S:'سبيت ♠',H:'هاص ♥',D:'ديمن ♦',C:'شريا ♣'};
 const TRIXK=[['kh','ملك الكبة'],['queens','البنات'],['diamonds','الديناري'],['tricks','اللطوش'],['trix','التركس']];
@@ -3194,7 +3212,7 @@ function renderHome(){
   $('#charsH').innerHTML=CHARS.map(c=>`<button class="ch ${P.char===c.id?'sel':''}" data-id="${c.id}" onclick="if(!owns('char','${c.id}')){openShop('chars');return}const f=P.char!=='${c.id}';P.char='${c.id}';save();renderHome();pokeHome('${c.id}',f)"><div class="av">${faceHTML(c.id)}</div><span>${c.name}</span></button>`).join('');
   $('#chTag').textContent=CHARS.find(c=>c.id===P.char).tag;
   document.querySelectorAll('#diffSeg button').forEach(b=>{b.classList.toggle('on',b.dataset.d===P.diff);b.onclick=()=>{P.diff=b.dataset.d;save();renderHome()}});
-  $('#gamesH').innerHTML=GAMES.map(([k,n,ic,sub])=>`<button class="gm ${P.game===k?'sel':''}" onclick="P.game='${k}';save();renderHome()"><i>${ic}</i><b>${n}</b><small>${sub}</small></button>`).join('');
+  $('#gamesH').innerHTML=GAMES.map(([k,n,ic,sub])=>`<button class="gm real g-${k} ${P.game===k?'sel':''}" onclick="P.game='${k}';save();renderHome()"><div class="gmfelt">${gmFan(k)}</div><b>${n}</b><small>${sub}</small></button>`).join('');
   const g=P.game||'moor';let opts,cur,setf;
   if(g==='moor'){opts=[[251,'٢٥١']];cur=251;setf=()=>{};$('#targetLbl').textContent='عدد النقاط للفوز'}
   else if(g==='baloot'){opts=[[152,'١٥٢']];cur=152;setf=()=>{};$('#targetLbl').textContent='عدد النقاط للفوز'}
